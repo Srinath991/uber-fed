@@ -29,7 +29,7 @@ const UserLogin = () => {
         <div className=" pb-6">
           <img
             className="w-25 object-cover p-0 overflow-hidden rounded-lg"
-            src="uber-logo.png"
+            src="/uber-logo.png"
             alt="uber"
           />
         </div>

@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router";
-
+import React, {useState } from "react";
+import { Link, useNavigate } from "react-router";
+import axios from "axios";
 const CaptainLogin = () => {
+  const navigate=useNavigate()
+  const apiUrl=import.meta.env.VITE_API_URL
   const [email, setEmail] = useState("");
   const [password, setpassword] = useState("");
   const [captainData, setcaptain] = useState({});
@@ -13,7 +15,7 @@ const CaptainLogin = () => {
     .then(
       (response)=>{
         if(response.data.status=200){
-          setCaptain(response.data.user);
+          setcaptain(response.data.user);
           localStorage.setItem("token", response.data.token);
           navigate("/captain/home");
         }
@@ -27,7 +29,7 @@ const CaptainLogin = () => {
         <div className="pb-1">
           <img
             className="w-25 object-cover p-0 overflow-hidden rounded-lg"
-            src="uber-driver-logo.svg"
+            src="/uber-driver-logo.svg"
             alt="uber"
           />
         </div>

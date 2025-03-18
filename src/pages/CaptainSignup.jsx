@@ -46,7 +46,7 @@ const CaptainSignup = () => {
           <div className="pb-1">
             <img
               className="w-25 object-cover p-0 overflow-hidden rounded-lg"
-              src="uber-driver-logo.svg"
+              src="/uber-driver-logo.svg"
               alt="uber"
             />
           </div>
