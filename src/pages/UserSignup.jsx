@@ -1,21 +1,30 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router";
+import axios from "axios";
+import { userDataContext } from "../context/userContext";
 
 const UserSignup = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [email, setEmail] = useState("");
   const [password, setpassword] = useState("");
-  const [userData, setuserData] = useState({});
-  const [firstName,setFirstName] =useState('')
-  const [lastName,setLastName] =useState('')
-  
-
-  const handleSubmit = (e) => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const navigate = useNavigate();
+  const { user, setUser } = useContext(userDataContext);
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setuserData({ ...userData, email, password,...{fullname:{firstName,lastName}} });
-    setFirstName('')
-    setLastName('')
-    setEmail("");
-    setpassword("");
+
+    const newUser={
+      email,
+      password,
+      ...{ fullName: { firstName,lastName } },
+    }
+    const response = await axios.post(`${apiUrl}/user/register`, newUser);
+    if (response.status == 201) {
+      setUser(response.data.user)
+      localStorage.setItem('token',data.token)
+      navigate('/user/login')
+    }
   };
   return (
     <div>
@@ -33,7 +42,7 @@ const UserSignup = () => {
               <h3 className=" text-2xl font-semibold">What's your name</h3>
               <div className="flex gap-2 ">
                 <input
-                autoComplete="current-password"
+                  autoComplete="current-password"
                   className="bg-[#eeeeee] rounded p-2 text-base w-1/2 "
                   type="text"
                   required
@@ -82,7 +91,7 @@ const UserSignup = () => {
               </button>
               <p className="mt-1.5 text-center">
                 Already have a account?{" "}
-                <Link to={"/login"} className=" text-blue-400">
+                <Link to={"/user/login"} className=" text-blue-400">
                   login here
                 </Link>
               </p>
@@ -90,8 +99,8 @@ const UserSignup = () => {
           </form>
         </div>
         <p className=" text-sm leading-tight">
-        By procedding, you get a calls,whatsApp or SMS messages,including a
-        automated means, from uber and it's affiliates to the number provided.
+          By procedding, you get a calls,whatsApp or SMS messages,including a
+          automated means, from uber and it's affiliates to the number provided.
         </p>
       </div>
     </div>

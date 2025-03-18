@@ -1,17 +1,26 @@
-import React, { useState } from "react";
-import { Link } from "react-router";
+import React, { useContext, useState } from "react";
+import { data, Link,useNavigate } from "react-router";
+import { userDataContext } from "../context/userContext";
+import axios from "axios";
+
 const UserLogin = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [email, setEmail] = useState("");
   const [password, setpassword] = useState("");
-  const [userData, setuserData] = useState({});
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const { user, setUser } = useContext(userDataContext);
+
+  const handleSubmit = async(e) => {
     e.preventDefault();
+    const payload={email, password };
+    const response = await axios.post(`${apiUrl}/user/login`, payload);
+    if (response.status == 200) {
+      setUser(response.data.user)
 
-    setuserData({ ...userData, email, password });
-
-    setEmail("");
-    setpassword("");
+      localStorage.setItem('token',response.data.token)
+      navigate('/user/home')
+    }
   };
 
   return (
@@ -55,7 +64,7 @@ const UserLogin = () => {
             </button>
             <p className="mt-1.5 text-center">
               New here?{" "}
-              <Link to={"/signup"} className=" text-blue-400">
+              <Link to={"/user/signup"} className=" text-blue-400">
                 Create new account
               </Link>
             </p>
@@ -63,7 +72,7 @@ const UserLogin = () => {
         </form>
       </div>
       <Link
-        to={"/captain-login"}
+        to={"/captain/login"}
         className=" flex justify-center items-center w-full bg-[#10b461] text-white p-3 rounded mt-3 text-xl font-semibold"
       >
         Sign in as Captain

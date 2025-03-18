@@ -6,13 +6,19 @@ const CaptainLogin = () => {
   const [password, setpassword] = useState("");
   const [captainData, setcaptain] = useState({});
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-
-    setcaptain({ ...captainData, email, password });
-    
-    setEmail("");
-    setpassword("");
+    const captainData={email,password };
+    await axios.post(`${apiUrl}/captain/login`,captainData)
+    .then(
+      (response)=>{
+        if(response.data.status=200){
+          setCaptain(response.data.user);
+          localStorage.setItem("token", response.data.token);
+          navigate("/captain/home");
+        }
+      }
+    )
   };
 
   return (
@@ -56,7 +62,7 @@ const CaptainLogin = () => {
             </button>
             <p className="mt-1.5 text-center">
               Join a fleet,{" "}
-              <Link to={"/captain-signup"} className=" text-blue-400">
+              <Link to={"/captain/signup"} className=" text-blue-400">
                 register as a Captain
               </Link>
             </p>
@@ -64,7 +70,7 @@ const CaptainLogin = () => {
         </form>
       </div>
       <Link
-        to={"/login"}
+        to={"/user/login"}
         className=" flex justify-center items-center w-full bg-[#d5622d] text-white p-3 rounded mt-3 text-xl font-semibold"
       >
         Sign in as User
