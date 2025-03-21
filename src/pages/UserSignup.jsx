@@ -22,7 +22,7 @@ const UserSignup = () => {
     const response = await axios.post(`${apiUrl}/user/register`, newUser);
     if (response.status == 201) {
       setUser(response.data.user)
-      localStorage.setItem('token',data.token)
+      localStorage.setItem('token',response.data.token)
       navigate('/user/login')
     }
   };

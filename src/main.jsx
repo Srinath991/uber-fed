@@ -6,6 +6,7 @@ import { BrowserRouter } from "react-router";
 import UserContext from "./context/userContext.jsx";
 import CaptainContext from "./context/CaptainContext.jsx";
 
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <CaptainContext>
