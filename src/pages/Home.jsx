@@ -75,9 +75,9 @@ const Home = () => {
       <img className="w-24 p-4 absolute" src="/uber-logo.png" alt="Uber Logo" />
 
       {/* Background Map */}
-      <div>
+      <div className="h-full w-full relative overflow-hidden">
         <img
-          className="h-screen w-screen object-cover"
+          className="w-full h-full object-cover"
           src="/maps.jpeg"
           alt="Map Background"
         />
