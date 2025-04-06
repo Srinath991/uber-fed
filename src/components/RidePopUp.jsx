@@ -3,6 +3,7 @@ import React from "react";
 const RidePopUp = (props) => {
   return (
     <>
+    
       <div className="flex flex-col justify-between items-start p-2 bg-white w-full ">
         <div className="flex flex-col justify-between items-center w-full mb-4">
           <div className="flex justify-between items-center w-full mb-4">

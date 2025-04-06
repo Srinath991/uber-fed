@@ -1,29 +1,33 @@
 import React from "react";
 
 const VehiclePanel = (props) => {
+  const fare=props.fare
   const vehicleOptions = [
     {
       src: "/uber-car.png",
-      type: "UberGo",
+      title: "UberGo",
+      type: "auto",
       capacity: 4,
       time: "2 minutes away",
-      price: "$124",
+      price: `$${fare.car}`,
       description: "Affordable, comfort rides",
     },
     {
       src: "/uber-bike.png",
-      type: "Moto",
+      title: "Moto",
+      type: "moto",
       capacity: 2,
       time: "3 minutes away",
-      price: "$90",
+      price: "$"+fare.moto,
       description: "Affordable, comfort rides",
     },
     {
       src: "/uber-auto.png",
-      type: "Uber Auto",
+      title: "Uber Auto",
+      type: "auto",
       capacity: 3,
       time: "2 minutes away",
-      price: "$124",
+      price: '$'+fare.auto,
       description: "Affordable, comfort rides",
     },
   ];
@@ -39,8 +43,9 @@ const VehiclePanel = (props) => {
       {vehicleOptions.map((vehicle, index) => (
         <div
         onClick={()=>{
-            props.setConfirmRide(true)
-            // props.setVehiclePanelOpen(false)
+          props.setVehicleType(vehicle.type)
+          props.setConfirmRide(true)
+            
         }}
           key={index}
           className="flex items-center justify-between bg-gray-100 p-2 rounded-2xl cursor-pointer active:border-black active:border-1 "
@@ -54,7 +59,7 @@ const VehiclePanel = (props) => {
           {/* Vehicle Information */}
           <div className="w-1/2">
             <h4 className="font-medium text-sm">
-              {vehicle.type}
+              {vehicle.title}
               <span className="ml-2 text-gray-500">
                 <i className="ri-user-fill"></i> {vehicle.capacity}
               </span>

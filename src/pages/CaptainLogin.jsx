@@ -1,12 +1,15 @@
-import React, {useState } from "react";
+import React, {useContext, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import axios from "axios";
+import { captainDataContext } from "../context/CaptainContext";
+
 const CaptainLogin = () => {
+
   const navigate=useNavigate()
   const apiUrl=import.meta.env.VITE_API_URL
   const [email, setEmail] = useState("");
   const [password, setpassword] = useState("");
-  const [captainData, setcaptain] = useState({});
+  const {setCaptain}=useContext(captainDataContext)
 
   const handleSubmit = async(e) => {
     e.preventDefault();
@@ -15,7 +18,7 @@ const CaptainLogin = () => {
     .then(
       (response)=>{
         if(response.data.status=200){
-          setcaptain(response.data.user);
+          setCaptain(response.data.user);
           localStorage.setItem("token", response.data.token);
           navigate("/captain/home");
         }

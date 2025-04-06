@@ -9,7 +9,7 @@ const ConfirmRidePanel = (props) => {
             Confirm your Ride
           </h3>
           <h5
-            onClick={() => props.setVehicleFound(false)}
+            onClick={() => props.setConfirmRide(false)}
             className="cursor-pointer"
           >
             <i className="ri-arrow-down-wide-fill text-lg text-gray-700"></i>
@@ -27,7 +27,7 @@ const ConfirmRidePanel = (props) => {
               <div>
                 <h3 className="font-medium text-lg">562/11A</h3>
                 <p className="text-sm text-gray-600">
-                  lingadheeranahalli, bengalore, karnataka
+                  {props.pickup}
                 </p>
               </div>
             </div>
@@ -38,8 +38,8 @@ const ConfirmRidePanel = (props) => {
               <div>
                 <h3 className="font-medium text-lg">Royal Mart</h3>
                 <p className="text-sm text-gray-600">
-                  {" "}
-                  7th cross road 1st sector , bengalore, karnataka
+                  {props.destination}
+                  
                 </p>
               </div>
             </div>
@@ -48,7 +48,7 @@ const ConfirmRidePanel = (props) => {
                 <i className="ri-currency-line"></i>
               </div>
               <div>
-                <h3 className="font-medium text-lg">$193</h3>
+                <h3 className="font-medium text-lg">${props.fare[props.vehicleType]}</h3>
                 <p className="text-sm text-gray-600">UPI</p>
               </div>
             </div>
@@ -56,8 +56,10 @@ const ConfirmRidePanel = (props) => {
           <button
             className="w-full bg-green-600 text-white font-semibold rounded-2xl py-3 mt-4"
             onClick={() => {
+              props.createRide()
               props.setVehicleFound(true);
               props.setConfirmRide(false);
+              
             }}
           >
             confirm
