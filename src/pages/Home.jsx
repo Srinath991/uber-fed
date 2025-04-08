@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import gsap from "gsap";
 import "remixicon/fonts/remixicon.css";
 import LocationSearchPannel from "../components/LocationSearchPannel";
@@ -7,7 +7,10 @@ import ConfirmRidePanel from "../components/ConfirmRidePanel";
 import LookingForDriver from "../components/LookingForDriver";
 import WaitingForDriver from "../components/WaitingForDriver";
 import axios from "axios";
-
+import { SocketContext } from "../context/SocketContext";
+import { userDataContext } from "../context/userContext";
+import { useNavigate } from "react-router";
+import LiveTracking from "../components/LiveTracking";
 const Home = () => {
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
@@ -20,6 +23,7 @@ const Home = () => {
   const [activeField, setActiveField] = useState("pickup");
   const [fare, setFare] = useState({});
   const [vehicleType, setVehicleType] = useState(null);
+  const [ride, setRide] = useState({});
 
   const panelRef = useRef(null);
   const vehiclePanelRef = useRef(null);
@@ -27,8 +31,27 @@ const Home = () => {
   const vehicleFoundRef = useRef(null);
   const WaitingForDriverRef = useRef(null);
 
+  const navigate=useNavigate()
+
   const apiUrl = import.meta.env.VITE_API_URL;
   const token = localStorage.getItem("token");
+
+  const { sendMessage, receiveMessage } = useContext(SocketContext);
+  const { user } = useContext(userDataContext);
+  receiveMessage("ride-confirmed", (data) => {
+    setRide(data);
+    setwaitingForDriver(true);
+    setVehicleFound(false);
+  });
+  useEffect(() => {
+    sendMessage("join", { userType: "user" });
+  });
+
+  receiveMessage("ride-started",(data)=>{
+    setwaitingForDriver(false)
+    navigate('/user/riding',{state:{ride:data}})
+  });
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -82,7 +105,6 @@ const Home = () => {
   }, [confirmRide]);
 
   useEffect(() => {
-   
     gsap.to(vehicleFoundRef.current, {
       transform: vehicleFound ? "translateY(0)" : "translateY(100%)",
       duration: 0.3,
@@ -137,11 +159,7 @@ const Home = () => {
       <img className="w-24 p-4 absolute" src="/uber-logo.png" alt="Uber Logo" />
 
       <div className="h-full w-full relative overflow-hidden">
-        <img
-          className="w-full h-full object-cover"
-          src="/maps.jpeg"
-          alt="Map Background"
-        />
+        <LiveTracking/>
       </div>
 
       <div className="flex flex-col justify-end absolute top-0 w-full h-screen">
@@ -234,7 +252,9 @@ const Home = () => {
       {vehicleFound ? (
         <div
           ref={vehicleFoundRef}
-          className={`fixed bottom-0 z-10  p-5 w-full bg-white ${vehicleFound ?"translate-y-0":"translate-y-full"}`}
+          className={`fixed bottom-0 z-10  p-5 w-full bg-white ${
+            vehicleFound ? "translate-y-0" : "translate-y-full"
+          }`}
         >
           <LookingForDriver
             setVehicleFound={setVehicleFound}
@@ -249,7 +269,10 @@ const Home = () => {
         ref={WaitingForDriverRef}
         className="fixed z-20 bottom-0 p-5 w-full bg-white translate-y-full"
       >
-        <WaitingForDriver setwaitingForDriver={setwaitingForDriver} />
+        <WaitingForDriver
+          setwaitingForDriver={setwaitingForDriver}
+          ride={ride}
+        />
       </div>
     </div>
   );

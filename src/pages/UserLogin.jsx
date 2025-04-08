@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { data, Link,useNavigate } from "react-router";
+import { Link,useNavigate } from "react-router";
 import { userDataContext } from "../context/userContext";
 import axios from "axios";
 
@@ -9,7 +9,7 @@ const UserLogin = () => {
   const [password, setpassword] = useState("");
   const navigate = useNavigate();
 
-  const { user, setUser } = useContext(userDataContext);
+  const {setUser } = useContext(userDataContext);
 
   const handleSubmit = async(e) => {
     e.preventDefault();
@@ -17,7 +17,6 @@ const UserLogin = () => {
     const response = await axios.post(`${apiUrl}/user/login`, payload);
     if (response.status == 200) {
       setUser(response.data.user)
-
       localStorage.setItem('token',response.data.token)
       navigate('/user/home')
     }

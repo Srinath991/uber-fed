@@ -1,19 +1,108 @@
-import React, { useEffect, useState,useRef } from "react";
-import { Link } from "react-router"; // Fixed import for react-router-dom
+import React, { useEffect, useState, useRef, useContext } from "react";
+import { Link, useNavigate } from "react-router"; // Fixed import for react-router-dom
 import CaptainDetails from "../components/CaptainDetails";
 import RidePopUp from "../components/RidePopUp";
 import gsap from "gsap";
 import ConfirmRidePopUp from "../components/ConfirmRidePopUp";
+import { captainDataContext } from "../context/CaptainContext";
+import { SocketContext } from "../context/SocketContext";
+import axios from "axios";
+import LiveTracking from "../components/LiveTracking";
+
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const CaptainHome = () => {
   // state variables
-  const [ridePopUpPanel, setridePopUpPanel] = useState(false)
-  const [confirmRidePopUpPanel, setConfirmRidePopUpPanel] = useState(false)
-
+  const [ridePopUpPanel, setridePopUpPanel] = useState(false);
+  const [confirmRidePopUpPanel, setConfirmRidePopUpPanel] = useState(false);
+  const [ride, setRide] = useState({});
+  const [finalRide, setFinalRide] = useState({})
 
   // reerence to panals
-  const ridePopUpPanelRef = useRef()
-  const confirmRidePopUpPanelRef = useRef()
+  const ridePopUpPanelRef = useRef();
+  const confirmRidePopUpPanelRef = useRef();
+
+  const navigate=useNavigate()
+
+  const { sendMessage, receiveMessage, socket } = useContext(SocketContext);
+  const { captain } = useContext(captainDataContext);
+
+  const getCurrentLocation = () => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error("Geolocation is not supported by your browser."));
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude: lat, longitude: lng } = position.coords;
+          resolve({ lat, lng });
+        },
+        (error) => {
+          reject(error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        }
+      );
+    });
+  };
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      try {
+        const location = await getCurrentLocation();
+        sendMessage("update-location-captain", { location });
+      } catch (err) {
+        console.error("Failed to get location:", err.message);
+      }
+    }, 3000); // every 3 seconds
+
+    return () => clearInterval(intervalId);
+  }, [sendMessage]);
+
+  useEffect(() => {
+    sendMessage("join", { userType: "captain" });
+  });
+  receiveMessage("new-ride", (data) => {
+    setRide(data);
+
+    setridePopUpPanel(true);
+  });
+  const confirmRide = async () => {
+    try {
+      const token = localStorage.getItem("token"); // ensure token is fetched here
+      if (!token) {
+        console.error("❌ Token not found in localStorage");
+        return;
+      }
+  
+      const response = await axios.post(
+        `${apiUrl}/ride/confirm`,
+        {
+          rideId: ride._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setFinalRide(response.data)
+    } catch (error) {
+      console.error(
+        "❌ Error while confirming ride:",
+        error?.response?.data?.message || error.message
+      );
+      // Optional: show error toast or feedback to user
+    }
+  };
+  
+  receiveMessage("ride-started",(data)=>{
+    navigate('/captain/riding')
+  });
 
   useEffect(() => {
     gsap.to(ridePopUpPanelRef.current, {
@@ -49,20 +138,30 @@ const CaptainHome = () => {
           </Link>
         </div>
         {/* Map Background */}
-        <img
-          className="w-full h-full object-cover"
-          src="/maps.jpeg"
-          alt="Map Background"
-        />
+        <LiveTracking/>
       </div>
       <CaptainDetails />
-      <div ref={ridePopUpPanelRef} className="flex flex-col fixed z-10 bottom-0 p-2 w-full gap-4 bg-white ">
-        <RidePopUp setridePopUpPanel={setridePopUpPanel} setConfirmRidePopUpPanel={setConfirmRidePopUpPanel}/>
+      <div
+        ref={ridePopUpPanelRef}
+        className="flex flex-col fixed z-10 bottom-0 p-2 w-full gap-4 bg-white "
+      >
+        <RidePopUp
+          setridePopUpPanel={setridePopUpPanel}
+          setConfirmRidePopUpPanel={setConfirmRidePopUpPanel}
+          ride={ride}
+          confirmRide={confirmRide}
+        />
       </div>
-      <div ref={confirmRidePopUpPanelRef} className="flex flex-col fixed z-10 bottom-0 p-2 w-full gap-4 bg-white h-[80%] ">
-        <ConfirmRidePopUp setConfirmRidePopUpPanel={setConfirmRidePopUpPanel} setridePopUpPanel={setridePopUpPanel}/>
+      <div
+        ref={confirmRidePopUpPanelRef}
+        className="flex flex-col fixed z-10 bottom-0 p-2 w-full gap-4 bg-white h-[80%] "
+      >
+        <ConfirmRidePopUp
+          setConfirmRidePopUpPanel={setConfirmRidePopUpPanel}
+          setridePopUpPanel={setridePopUpPanel}
+          finalRide={finalRide}
+        />
       </div>
-     
     </div>
   );
 };

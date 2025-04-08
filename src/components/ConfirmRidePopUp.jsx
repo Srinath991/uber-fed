@@ -1,10 +1,42 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
+import axios from "axios";
+import { useNavigate } from "react-router";
 
 const ConfirmRidePopUp = (props) => {
-  const [otp, setotp] = useState('')
+  const apiUrl=import.meta.env.VITE_API_URL
+  const [otp, setotp] = useState("");
+  const navigate=useNavigate()
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
+  };
+  const handleClick = async () => {
+    try {
+      const token = localStorage.getItem("token"); // ensure token is fetched here
+      if (!token) {
+        console.error("❌ Token not found in localStorage");
+        return;
+      }
+  
+      const response = await axios.post(
+        `${apiUrl}/ride/start-ride`,
+        {
+          rideId: props.finalRide._id,
+          otp:otp
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      navigate('/captain/riding',{state:{ride:props.finalRide}})
+    } catch (error) {
+      console.error(
+        "❌ Error while confirming ride:",
+        error?.response?.data?.message || error.message
+      );
+      // Optional: show error toast or feedback to user
+    }
   };
   return (
     <>
@@ -12,7 +44,7 @@ const ConfirmRidePopUp = (props) => {
         <div className="flex flex-col justify-between items-center w-full mb-4">
           <div className="flex justify-between items-center w-full mb-4">
             <h3 className="text-2xl font-semibold">
-              Confrim this ride two start
+              Confirm this ride to start
             </h3>
             <h5
               onClick={() => props.setConfirmRidePopUpPanel(false)}
@@ -30,7 +62,9 @@ const ConfirmRidePopUp = (props) => {
                 alt="Captain Profile"
               />
               <div>
-                <h4 className="text-lg font-medium">Srinath V</h4>
+                <h4 className="text-lg font-medium">
+                  {props.finalRide?.user?.fullName?.firstName}
+                </h4>
               </div>
             </div>
             <div className="text-right">
@@ -47,7 +81,7 @@ const ConfirmRidePopUp = (props) => {
               <div>
                 <h3 className="font-medium text-lg">562/11A</h3>
                 <p className="text-sm text-gray-600">
-                  lingadheeranahalli, bengalore, karnataka
+                  {props.finalRide?.pickUp}
                 </p>
               </div>
             </div>
@@ -58,8 +92,7 @@ const ConfirmRidePopUp = (props) => {
               <div>
                 <h3 className="font-medium text-lg">Royal Mart</h3>
                 <p className="text-sm text-gray-600">
-                  {" "}
-                  7th cross road 1st sector , bengalore, karnataka
+                  {props.finalRide?.destination}
                 </p>
               </div>
             </div>
@@ -68,7 +101,9 @@ const ConfirmRidePopUp = (props) => {
                 <i className="ri-currency-line"></i>
               </div>
               <div>
-                <h3 className="font-medium text-lg">$193</h3>
+                <h3 className="font-medium text-lg">
+                  ${props.finalRide?.fare}
+                </h3>
                 <p className="text-sm text-gray-600">UPI</p>
               </div>
             </div>
@@ -82,16 +117,13 @@ const ConfirmRidePopUp = (props) => {
                 className="bg-[#eee] px-8 py-3 text-base w-full rounded-lg mb-3 mt-3"
                 type="number"
                 placeholder="Enter OTP"
-                onChange={(e)=>setotp(e.target.value)}
+                onChange={(e) => setotp(e.target.value)}
                 value={otp}
               />
 
-              <Link
-                className=" w-full flex justify-center items-center bg-green-600 text-white font-semibold rounded-2xl py-3 px-8 mt-3"
-                to={"/captain/riding"}
-              >
+              <button onClick={handleClick} className=" w-full flex justify-center items-center bg-green-600 text-white font-semibold rounded-2xl py-3 px-8 mt-3">
                 Confirm
-              </Link>
+              </button>
             </form>
 
             <button

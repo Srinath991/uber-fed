@@ -1,15 +1,14 @@
 import React from "react";
 
-const RidePopUp = (props) => {
+const RidePopUp = ({ setridePopUpPanel, setConfirmRidePopUpPanel, ride,confirmRide}) => {
   return (
     <>
-    
       <div className="flex flex-col justify-between items-start p-2 bg-white w-full ">
         <div className="flex flex-col justify-between items-center w-full mb-4">
           <div className="flex justify-between items-center w-full mb-4">
             <h3 className="text-2xl font-semibold">New ride available</h3>
             <h5
-              onClick={() => props.setridePopUpPanel(false)}
+              onClick={() => setridePopUpPanel(false)}
               className="cursor-pointer"
             >
               <i className="ri-arrow-down-wide-fill text-lg text-gray-700"></i>
@@ -24,7 +23,11 @@ const RidePopUp = (props) => {
                 alt="Captain Profile"
               />
               <div>
-                <h4 className="text-lg font-medium">Srinath V</h4>
+                <h4 className="text-lg font-medium">
+                  {ride?.user?.fullName?.firstName +
+                    " " +
+                    ride?.user?.fullName?.lastName}
+                </h4>
               </div>
             </div>
             <div className="text-right">
@@ -40,9 +43,7 @@ const RidePopUp = (props) => {
               </div>
               <div>
                 <h3 className="font-medium text-lg">562/11A</h3>
-                <p className="text-sm text-gray-600">
-                  lingadheeranahalli, bengalore, karnataka
-                </p>
+                <p className="text-sm text-gray-600">{ride.pickUp}</p>
               </div>
             </div>
             <div className="flex gap-2 border-b-1 border-gray-300 pb-4">
@@ -51,10 +52,7 @@ const RidePopUp = (props) => {
               </div>
               <div>
                 <h3 className="font-medium text-lg">Royal Mart</h3>
-                <p className="text-sm text-gray-600">
-                  {" "}
-                  7th cross road 1st sector , bengalore, karnataka
-                </p>
+                <p className="text-sm text-gray-600">{ride.destination}</p>
               </div>
             </div>
             <div className="flex gap-2 ">
@@ -62,20 +60,25 @@ const RidePopUp = (props) => {
                 <i className="ri-currency-line"></i>
               </div>
               <div>
-                <h3 className="font-medium text-lg">$193</h3>
+                <h3 className="font-medium text-lg">${ride.fare}</h3>
                 <p className="text-sm text-gray-600">UPI</p>
               </div>
             </div>
           </div>
           <button
             className="w-full bg-green-600 text-white font-semibold rounded-2xl py-3 mt-4"
-            onClick={() => {props.setConfirmRidePopUpPanel(true)}}
+            onClick={() => {
+              setConfirmRidePopUpPanel(true);
+              confirmRide()
+            }}
           >
             Accept
           </button>
           <button
             className="w-full bg-gray-400 text-gray-700 font-semibold rounded-2xl py-3 mt-4"
-            onClick={() => {props.setridePopUpPanel(false)}}
+            onClick={() => {
+              setridePopUpPanel(false);
+            }}
           >
             Ignore
           </button>

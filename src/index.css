@@ -5,3 +5,28 @@
   --background-image-uber-driver:url("uber-driver-logo.svg")
 }
 
+@keyframes dots {
+  0%, 20% {
+    content: ".";
+  }
+  40% {
+    content: "..";
+  }
+  60% {
+    content: "...";
+  }
+  80%, 100% {
+    content: "";
+  }
+}
+
+.dot-animation::after {
+  content: "";
+  animation: dots 1.5s infinite steps(1, end);
+}
+
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

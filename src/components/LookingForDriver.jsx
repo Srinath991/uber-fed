@@ -4,19 +4,16 @@ const LookingForDriver = ({ setVehicleFound, pickup, destination, fare, vehicleT
   return (
     <div className="flex flex-col justify-between items-start p-4 bg-white w-full">
       <div className="flex justify-between items-center w-full mb-4">
-        <h3 className="text-2xl font-semibold text-center">
-          Looking for a driver...
+        <h3 className="text-2xl font-semibold text-center animate-typing-dots">
+          Looking for a driver<span className="dot-animation">...</span>
         </h3>
-        <h5
-          onClick={() => setVehicleFound(false)}
-          className="cursor-pointer"
-        >
+        <h5 onClick={() => setVehicleFound(false)} className="cursor-pointer">
           <i className="ri-arrow-down-wide-fill text-lg text-gray-700"></i>
         </h5>
       </div>
 
       <div className="flex flex-col justify-between items-center gap-4 w-full">
-        <div className="py-4">
+        <div className="py-4 animate-pulse">
           <img className="h-24" src="/uber-car.png" alt="uber-car" />
         </div>
 

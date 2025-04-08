@@ -1,17 +1,22 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Link } from "react-router"; // Updated the import for react-router-dom
+import { Link, useLocation } from "react-router"; // Updated the import for react-router-dom
 import gsap from "gsap";
 import FinishRide from "../components/FinishRide";
+import LiveTracking from "../components/LiveTracking";
 
 const CaptainRiding = () => {
   const [finishRidePanel, setfinishRidePanel] = useState(false);
   const finishRideRef = useRef();
+  const location = useLocation();
+  const rideData = location.state?.ride;
+
   useEffect(() => {
     gsap.to(finishRideRef.current, {
       transform: finishRidePanel ? "translateY(0)" : "translateY(100%)",
       duration: 0.3,
     });
   }, [finishRidePanel]);
+
   return (
     <div className="h-screen bg-gray-100">
       {/* Background Map and Navigation */}
@@ -29,11 +34,7 @@ const CaptainRiding = () => {
           </Link>
         </div>
         {/* Map Background */}
-        <img
-          className="w-full h-full object-cover"
-          src="/maps.jpeg"
-          alt="Map Background"
-        />
+        <LiveTracking/>
       </div>
 
       {/* Bottom Section */}
@@ -50,7 +51,10 @@ const CaptainRiding = () => {
         </button>
       </div>
       <div ref={finishRideRef} className="fixed z-10 bottom-0 w-full bg-white ">
-        <FinishRide setfinishRidePanel={setfinishRidePanel} />
+        <FinishRide
+          setfinishRidePanel={setfinishRidePanel}
+          ride={rideData}
+        />
       </div>
     </div>
   );
