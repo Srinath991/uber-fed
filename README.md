@@ -1,12 +1,69 @@
-# React + Vite
+# Uber Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend application for the Uber clone project built with React and Vite.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React
+- Vite
+- JavaScript
+- Tailwind CSS
+- React Router
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm
+
+### Installation
+
+1. Clone the repository
+```bash
+git clone https://github.com/Srinath991/uber-fed
+cd uber-fed
+```
+
+2. Install dependencies
+```bash
+npm install
+```
+
+3. Environment Variables
+Create a `.env` file in the root directory and add the following variables:
+```env
+VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+VITE_API_URL=your_backend_api_url
+```
+
+4. Start the development server
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:5173`
+
+## Features
+
+- User authentication
+- Real-time ride tracking
+- Interactive maps
+- Ride booking
+- Payment integration
+- Driver/passenger matching
+
+## Project Structure
+
+```
+src/
+├── components/     # Reusable UI components
+├── pages/         # Page components
+├── utils/         # Utility functions
+```
+
+## License
+
+This project is licensed under the MIT License.
+
+Backend:[https://github.com/Srinath991/uber-bed](Backend)
